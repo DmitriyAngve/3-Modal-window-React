@@ -21,7 +21,10 @@ const AddUser = (props) => {
       return;
     }
     event.preventDefault();
-    console.log(enteredUsername, enteredAge);
+
+    // execute it as function here,because we get as a value on that prop will be a function
+    props.onAddUser(enteredUsername, enteredAge); // forward this data to the App.js component up on every click on the AddUser button inside of the AddUser component
+
     // Resetting (use empty string)
     setEnteredUsername("");
     setEnteredAge("");
@@ -63,3 +66,5 @@ const AddUser = (props) => {
 };
 
 export default AddUser;
+
+// Lifting the state up! We need to manage our list of users in a place, where we can get both access to the AddUser component and get notified when that AddUser button was clicked as well as where we got access to the users list component to feed our users array into it. We dont have access to UsersList inside of AddUser, for example. Managing our Userlist state here would be wrong our users array. UserList component - right place, because we need that list, but there we don't get access to the added user data that AddUser form is out of reach here. We already configured this UsersList component to work differently and to get the users data from outside wire props. That's the place where we wanna manage our state. We wanna manage it in the App.js component because that's the one component above both AddUser and UsersList, it's the nearest component above those two components, which has access to both components and therefore we lift the state management up to this App component
