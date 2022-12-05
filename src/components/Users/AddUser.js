@@ -1,28 +1,37 @@
 import React, { useState } from "react";
+
 import Card from "../UI/Card";
-import classes from "./AddUser.module.css";
 import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
+import classes from "./AddUser.module.css";
 
 const AddUser = (props) => {
-  const [enteredUsername, setEnteredUsername] = useState();
+  const [enteredUsername, setEnteredUsername] = useState("");
   // define the default, the initial starting state. useState always returns an array and we pulling elements out from array and  store elements in separate constants. First element - is a current state snapshot. And every time this Component re-renders (does when the state is update), "enteredUsername" will hold the latest state snapshot, and "setEnteredUsername" holds the functions which we can call to change that state  and to then trigger such a re-render cycle
-  const [enteredAge, setEnteredAge] = useState();
+  const [enteredAge, setEnteredAge] = useState("");
 
-  // addUserHandler function inspect event object (submit?)
+  // EXTRA useState for ErrorModal window
+  const [error, setError] = useState();
   const addUserHandler = (event) => {
+    // addUserHandler function inspect event object (submit?)
     // prevent that default which for the submission event is that a request is sent
-
+    event.preventDefault();
+    // if this conditions true, returns finish execution
     // All this code only executes if we have valid inputs
     if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
-      return; // if this conditions true, returns finish execution
-    }
-    //+ - becuase enteredAge is a sting basically
-    if (+enteredAge < 1) {
+      setError({
+        title: "Invalid input",
+        message: "Please enter a valid name and age (non-empty values).",
+      });
       return;
     }
-    event.preventDefault();
-
+    if (+enteredAge < 1) {
+      setError({
+        title: "Invalid age",
+        message: "Please enter a valid age (> 0).",
+      });
+      return;
+    }
     // execute it as function here,because we get as a value on that prop will be a function
     props.onAddUser(enteredUsername, enteredAge); // forward this data to the App.js component up on every click on the AddUser button inside of the AddUser component
 
@@ -40,12 +49,25 @@ const AddUser = (props) => {
     setEnteredAge(event.target.value);
   };
 
+  // need to reset to undefined or to null (to nay other falsy error)
+  const errorHandler = () => {
+    setError(null); // after this error window no longer be rendered
+  };
+
   // "htmlFor" - name of prop for assigning that for attribute to a label
   // "onSubmit" - prop to specify a function that should be executed when that form is submitted
   return (
     // Custom components (like Card) does not know what to do with the class name prop because not a built in HTML component (like input, label). Make sure that we accept incoming class named prop and we do something with it
+
+    // wrap {} {error && {<ErrorModal...>}} - because its generally a JavaScript expression
     <div>
-      <ErrorModal title="An error occured!" message="Something went wrong!" />
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
+        />
+      )}
       <Card className={classes.input}>
         <form onSubmit={addUserHandler}>
           <label htmlFor="username">Username</label>
