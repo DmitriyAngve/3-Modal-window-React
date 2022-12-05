@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import Card from "../UI/Card";
 import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
 import classes from "./AddUser.module.css";
+import Wrapper from "../Helpers/Wrapper";
 
 const AddUser = (props) => {
+  // The first time React reaches JSX code with prop ref and renders code with input, it will actually set the values stored in nameInputRef to the native DOM element that is rendered based on this input. "nameInputRef" will really be a real DOM element later.
+  const nameInputRef = useRef(); // useRef() returns a value which allows me to work with that ref later, so which allows us to work with that element to which we\re going to connect it
+  const ageInputRef = useRef(); // We can do it with inputs, and not with any elements
+
   const [enteredUsername, setEnteredUsername] = useState("");
   // define the default, the initial starting state. useState always returns an array and we pulling elements out from array and  store elements in separate constants. First element - is a current state snapshot. And every time this Component re-renders (does when the state is update), "enteredUsername" will hold the latest state snapshot, and "setEnteredUsername" holds the functions which we can call to change that state  and to then trigger such a re-render cycle
   const [enteredAge, setEnteredAge] = useState("");
 
   // EXTRA useState for ErrorModal window
   const [error, setError] = useState();
+
   const addUserHandler = (event) => {
     // addUserHandler function inspect event object (submit?)
     // prevent that default which for the submission event is that a request is sent
@@ -60,7 +66,7 @@ const AddUser = (props) => {
     // Custom components (like Card) does not know what to do with the class name prop because not a built in HTML component (like input, label). Make sure that we accept incoming class named prop and we do something with it
 
     // wrap {} {error && {<ErrorModal...>}} - because its generally a JavaScript expression
-    <div>
+    <Wrapper>
       {error && (
         <ErrorModal
           title={error.title}
@@ -76,6 +82,7 @@ const AddUser = (props) => {
             type="text"
             value={enteredUsername || ""}
             onChange={usernameChangeHandler}
+            ref={nameInputRef}
           ></input>
           <label htmlFor="age">Age (Years)</label>
           <input
@@ -83,11 +90,12 @@ const AddUser = (props) => {
             type="number"
             value={enteredAge || ""}
             onChange={ageChangeHandler}
+            ref={ageInputRef}
           ></input>
           <Button type="submit">Add User</Button>
         </form>
       </Card>
-    </div>
+    </Wrapper>
   );
 };
 

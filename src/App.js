@@ -22,11 +22,36 @@ function App() {
 
   return (
     // then we click the AddUser button hence the AddUserHandler in the AddUser component runs, we forward the enteredUsername and enteredAge to the App component (we do this with props), then a function which we pass to onAddUser should be triggered, its a function we have yet to define
-    <div>
+    <React.Fragment>
       <AddUser onAddUser={addUserHandler} />
       <UsersList users={usersList} />
-    </div>
+    </React.Fragment>
   );
 }
 
 export default App;
+
+// 1).
+/*
+import React, { useState, Fragment } from "react";
+  <Fragment>
+      <AddUser onAddUser={addUserHandler} />
+      <UsersList users={usersList} />
+    </Fragment>
+*/
+
+// 2).
+/*
+  <>
+    <AddUser onAddUser={addUserHandler} />
+    <UsersList users={usersList} />
+  </>
+    */
+
+// 3).
+/*
+  <Wrapper>
+    <AddUser onAddUser={addUserHandler} />
+    <UsersList users={usersList} />
+  </Wrapper>
+    */
